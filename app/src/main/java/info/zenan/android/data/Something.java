@@ -2,7 +2,6 @@ package info.zenan.android.data;
 
 public class Something {
 
-
     private String name;
 
     public String getName() {
