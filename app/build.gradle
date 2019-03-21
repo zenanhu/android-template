@@ -76,4 +76,11 @@ dependencies {
     implementation 'com.facebook.stetho:stetho:1.3.1'
     implementation 'com.facebook.stetho:stetho-okhttp3:1.3.1'
 
+    // RoomDB, ViewModel
+    def archRoomVersion = '1.1.1'
+    def archLifecycleVersion = '1.1.1'
+    implementation 'android.arch.lifecycle:extensions:' + archLifecycleVersion
+    annotationProcessor 'android.arch.lifecycle:compiler:' + archLifecycleVersion
+    implementation 'android.arch.persistence.room:runtime:' + archRoomVersion
+    annotationProcessor 'android.arch.persistence.room:compiler:' + archRoomVersion
 }
