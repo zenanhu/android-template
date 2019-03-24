@@ -16,7 +16,7 @@ import static android.arch.persistence.room.OnConflictStrategy.IGNORE;
 public interface UserDao {
 
     @Query("select * from user")
-    List<User> loadAllUsers();
+    LiveData<List<User>> loadAllUsers();
 
     @Query("select * from user where id = :id")
     User loadUserById(int id);

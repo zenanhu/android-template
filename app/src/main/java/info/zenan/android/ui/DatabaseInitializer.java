@@ -45,12 +45,12 @@ public class DatabaseInitializer {
         User user = new User();
         user.id = id;
         user.name = name;
-        db.userModel().insertUser(user);
+        db.userDao().insertUser(user);
         return user;
     }
 
     private static void populateWithTestData(AppDatabase db) {
-        db.userModel().deleteAll();
+        db.userDao().deleteAll();
 
         User user1 = addUser(db, "1", "Jason");
         User user2 = addUser(db, "2", "Mike");
