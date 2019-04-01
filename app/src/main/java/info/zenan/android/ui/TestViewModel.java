@@ -8,19 +8,25 @@ import android.arch.lifecycle.Transformations;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
+import info.zenan.android.AndroidApplication;
 import info.zenan.android.db.AppDatabase;
 import info.zenan.android.db.entity.User;
 import info.zenan.android.db.repository.UserRepository;
 
 public class TestViewModel extends AndroidViewModel {
 
-    private LiveData<String> userNames;
+    @Inject
+    AppDatabase appDatabase;
 
-    private AppDatabase mDb;
     private UserRepository repo;
+
+    private LiveData<String> userNames;
 
     public TestViewModel(Application application) {
         super(application);
+        AndroidApplication.getAppComponent(application).inject(this);
     }
 
     public LiveData<String> getUserNames() {
@@ -28,11 +34,10 @@ public class TestViewModel extends AndroidViewModel {
     }
 
     public void createDb() {
-        mDb = AppDatabase.getInMemoryDatabase(getApplication());
         repo = new UserRepository(getApplication());
 
         // Populate it with initial data
-        DatabaseInitializer.populateAsync(mDb);
+        DatabaseInitializer.populateAsync(appDatabase);
 
         // Receive changes
         subscribeToDbChanges();

@@ -14,6 +14,7 @@ import dagger.Module;
 import dagger.Provides;
 import info.zenan.android.api.OtherService;
 import info.zenan.android.api.RestRequestInterceptor;
+import info.zenan.android.db.AppDatabase;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -81,4 +82,9 @@ public class AppModule {
         return retrofit.create(OtherService.class);
     }
 
+    @Provides
+    @Singleton
+    AppDatabase provideAppDatabase(Application application) {
+        return AppDatabase.getInMemoryDatabase(application);
+    }
 }
