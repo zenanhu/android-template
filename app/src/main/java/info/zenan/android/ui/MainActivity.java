@@ -5,16 +5,22 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
 import info.zenan.android.AndroidApplication;
 import info.zenan.android.R;
 import info.zenan.android.api.OtherService;
-import retrofit2.Retrofit;
+import info.zenan.android.data.Something;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,34 +40,30 @@ public class MainActivity extends AppCompatActivity {
         Button button = (Button) findViewById(R.id.button);
         textView = (TextView) findViewById(R.id.textView);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.github.com")
-                .build();
 
-        OtherService otherService = retrofit.create(OtherService.class);
+        otherService.listRepos()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
 
-
-//        Call<List<Something>> repos = otherService.listRepos("zenanhu");
-
-
-//        otherService.listRepos().subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<List<Something>>() {
-//                    @Override
-//                    public void call(List<Something> somethings) {
-//                        for (Something something : somethings) {
-//                            Log.i("tag", something.getName());
-//                        }
-//                    }
-//                });
+                .subscribe(new Consumer<List<Something>>() {
+                    @Override
+                    public void accept(List<Something> somethings) {
+                        for (Something something : somethings) {
+                            Log.i("tag", something.getName());
+                        }
+                    }
+                });
 
         // RoomDB
 
-        mShowUserViewModel = ViewModelProviders.of(this).get(TestViewModel.class);
+        mShowUserViewModel = ViewModelProviders.of(this).
+
+                get(TestViewModel.class);
 
         populateDb();
 
         subscribeUiLoans();
+
     }
 
     private void populateDb() {
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         populateDb();
         subscribeUiLoans();
     }
+
     private void subscribeUiLoans() {
         mShowUserViewModel.getUserNames().observe(this, new Observer<String>() {
             @Override
