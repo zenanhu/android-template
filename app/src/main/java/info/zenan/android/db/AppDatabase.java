@@ -12,17 +12,21 @@ import info.zenan.android.db.entity.User;
 @Database(entities = {User.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
 
-    private static AppDatabase INSTANCE;
+    private static volatile AppDatabase INSTANCE;
 
     public abstract UserDao userDao();
 
     public static AppDatabase getInMemoryDatabase(Context context) {
         if (INSTANCE == null) {
-            INSTANCE = Room.inMemoryDatabaseBuilder(context.getApplicationContext(), AppDatabase.class)
-                    // To simplify the codelab, allow queries on the main thread.
-                    // Don't do this on a real app! See PersistenceBasicSample for an example.
-                    .allowMainThreadQueries()
-                    .build();
+            synchronized (AppDatabase.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = Room.inMemoryDatabaseBuilder(context.getApplicationContext(), AppDatabase.class)
+                            // To simplify the codelab, allow queries on the main thread.
+                            // Don't do this on a real app! See PersistenceBasicSample for an example.
+                            .allowMainThreadQueries()
+                            .build();
+                }
+            }
         }
         return INSTANCE;
     }
