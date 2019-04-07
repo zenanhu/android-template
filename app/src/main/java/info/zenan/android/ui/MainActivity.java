@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
         // RoomDB
         mShowUserViewModel = ViewModelProviders.of(this).get(TestViewModel.class);
         populateDb();
+        subscribeUiLoans();
     }
 
     private void populateDb() {
@@ -82,8 +83,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void testRxJava() {
-        subscribeUiLoans();
-
         Observable.create(new ObservableOnSubscribe<Object>() {
             @Override
             public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
