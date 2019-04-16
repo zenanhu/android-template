@@ -21,6 +21,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                includeCompileClasspath = true
+                arguments = [ eventBusIndex : 'info.zenan.android.event.EventBusIndex' ]
+            }
+        }
     }
     buildTypes {
         release {
@@ -86,4 +93,12 @@ dependencies {
     annotationProcessor 'android.arch.lifecycle:compiler:' + archLifecycleVersion
     implementation 'android.arch.persistence.room:runtime:' + archRoomVersion
     annotationProcessor 'android.arch.persistence.room:compiler:' + archRoomVersion
+
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-support-fragment:1.6.3'
+
+    implementation 'org.greenrobot:eventbus:3.1.1'
+    annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.1.1'
+
 }

@@ -3,6 +3,8 @@ package info.zenan.android;
 import android.app.Application;
 import android.content.Context;
 
+import com.squareup.leakcanary.LeakCanary;
+
 import info.zenan.android.di.AppComponent;
 
 public class AndroidApplication extends Application {
@@ -11,8 +13,11 @@ public class AndroidApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
         appComponent = AppComponent.Initializer.init(this);
+
+        if (!LeakCanary.isInAnalyzerProcess(this)) {
+            LeakCanary.install(this);
+        }
     }
 
     public AppComponent getAppComponent() {

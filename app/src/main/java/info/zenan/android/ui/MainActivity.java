@@ -10,7 +10,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import javax.inject.Inject;
 
@@ -18,8 +22,14 @@ import info.zenan.android.AndroidApplication;
 import info.zenan.android.R;
 import info.zenan.android.api.OtherService;
 import info.zenan.android.data.Something;
+import info.zenan.android.event.SimpleEvent;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +50,24 @@ public class MainActivity extends AppCompatActivity {
         Button button = (Button) findViewById(R.id.button);
         textView = (TextView) findViewById(R.id.textView);
 
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new SimpleEvent("hello"));
+            }
+        });
 
+        // RoomDB
+        mShowUserViewModel = ViewModelProviders.of(this).get(TestViewModel.class);
+        populateDb();
+        subscribeUiLoans();
+    }
+
+    private void populateDb() {
+        mShowUserViewModel.createDb();
+    }
+
+    private void listRepos() {
         otherService.listRepos()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -53,23 +80,83 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-
-        // RoomDB
-
-        mShowUserViewModel = ViewModelProviders.of(this).
-
-                get(TestViewModel.class);
-
-        populateDb();
-
-        subscribeUiLoans();
-
     }
 
-    private void populateDb() {
-        mShowUserViewModel.createDb();
-    }
+    private void testRxJava() {
+        Observable.create(new ObservableOnSubscribe<Object>() {
+            @Override
+            public void subscribe(ObservableEmitter<Object> emitter) throws Exception {
+                Log.d("TAG", "111 " + Thread.currentThread().getName());
+                emitter.onNext("test");
+            }
+        }).map(new Function<Object, Object>() {
+            @Override
+            public Object apply(Object o) throws Exception {
+                Log.d("TAG", "222 " + Thread.currentThread().getName());
+                return Observable.just(o);
+            }
+        }).subscribeOn(Schedulers.newThread()).observeOn(Schedulers.io()).subscribe(new io.reactivex.Observer<Object>() {
+            @Override
+            public void onSubscribe(Disposable d) {
 
+            }
+
+            @Override
+            public void onNext(Object o) {
+                Log.d("TAG", "333 " + Thread.currentThread().getName());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
+//        Disposable disposable = Observable.just("test1").map(new Function<String, Object>() {
+//            @Override
+//            public Object apply(String s) throws Exception {
+//                return null;
+//            }
+//        }).subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Consumer<Object>() {
+//                    @Override
+//                    public void accept(Object o) throws Exception {
+//
+//                    }
+//                });
+
+        Observable.interval(1, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new io.reactivex.Observer<Long>() {
+                    @Override
+                    public void onSubscribe(Disposable d) {
+
+                    }
+
+                    @Override
+                    public void onNext(Long aLong) {
+                        Log.i("TAG", "count: " + aLong);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
+    }
 
     public void onRefreshBtClicked(View view) {
         populateDb();
@@ -83,5 +170,30 @@ public class MainActivity extends AppCompatActivity {
                 textView.setText(result);
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i("Lifecycle", "onStart");
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        Log.i("Lifecycle", "onStop");
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i("Lifecycle", "onDestroy");
+    }
+
+    @Subscribe
+    public void onSimpleEvent(SimpleEvent event) {
+        Log.d("EventBus", "event.message: " + event.message);
     }
 }
