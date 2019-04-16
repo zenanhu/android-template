@@ -16,7 +16,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "info.zenan.android"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -36,6 +36,9 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     testImplementation 'junit:junit:4.12'
+
+    // Local modules
+    implementation project(':widget')
 
     def supportLibraryVersion = '27.1.1'
     implementation "com.android.support:appcompat-v7:${supportLibraryVersion}"
