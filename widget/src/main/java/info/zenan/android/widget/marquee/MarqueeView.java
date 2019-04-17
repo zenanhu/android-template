@@ -3,11 +3,8 @@ package info.zenan.android.widget.marquee;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ViewFlipper;
 
-import info.zenan.android.widget.R;
-
-public class MarqueeView<V extends View, D> extends ViewFlipper {
+public class MarqueeView<V extends View, D> extends BaseMarqueeView {
     private BaseAdapter<V, D> mAdapter;
 
     public MarqueeView(Context context) {
@@ -21,13 +18,17 @@ public class MarqueeView<V extends View, D> extends ViewFlipper {
 
     private void init(AttributeSet attrs) {
 //        setOrientation(LinearLayout.VERTICAL);
-        if (getInAnimation() == null || getOutAnimation() == null) {
-            setInAnimation(getContext(), R.anim.in_bottom);
-            setOutAnimation(getContext(), R.anim.out_top);
-        }
-        getInAnimation().setDuration(1000);
-        getOutAnimation().setDuration(1000);
+//        if (getInAnimation() == null || getOutAnimation() == null) {
+//            setInAnimation(getContext(), R.anim.in_bottom);
+//            setOutAnimation(getContext(), R.anim.out_top);
+//        }
+//        getInAnimation().setDuration(1000);
+//        getOutAnimation().setDuration(1000);
 
+    }
+
+    public void startFlipping() {
+        showNextView();
     }
 
     public void setAdapter(BaseAdapter adapter) {
