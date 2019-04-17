@@ -4,7 +4,8 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ViewFlipper;
 
-public class MarqueeView extends ViewFlipper {
+public class MarqueeView<V, D> extends ViewFlipper {
+    private BaseAdapter<V, D> mAdapter;
 
     public MarqueeView(Context context) {
         super(context);
