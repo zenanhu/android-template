@@ -14,6 +14,7 @@ import android.widget.TextView;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -73,8 +74,15 @@ public class MainActivity extends AppCompatActivity {
     private void initMarqueeView() {
         marqueeView = (MarqueeView) findViewById(R.id.marqueeView);
         MarqueeAdapter adapter= new MarqueeAdapter(this);
+        List<String> data = new ArrayList<>();
+        data.add("Test");
+        data.add("Test1");
+        data.add("Test2");
+        data.add("Test3");
+        adapter.setData(data);
         marqueeView.setAdapter(adapter);
         marqueeView.notifyDataSetChanged();
+        marqueeView.startFlipping();
     }
 
     private void populateDb() {
@@ -220,6 +228,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected TextView getView(int position) {
             TextView mView = new TextView(mContext);
+            String content = getItem(position);
+            mView.setText(content);
             return mView;
         }
 
