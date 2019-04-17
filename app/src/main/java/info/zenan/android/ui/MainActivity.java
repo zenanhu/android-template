@@ -2,6 +2,7 @@ package info.zenan.android.ui;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,8 @@ import info.zenan.android.R;
 import info.zenan.android.api.OtherService;
 import info.zenan.android.data.Something;
 import info.zenan.android.event.SimpleEvent;
+import info.zenan.android.widget.marquee.BaseAdapter;
+import info.zenan.android.widget.marquee.MarqueeView;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
@@ -41,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
 
     private TextView textView;
 
+    private MarqueeView marqueeView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +54,8 @@ public class MainActivity extends AppCompatActivity {
 
         Button button = (Button) findViewById(R.id.button);
         textView = (TextView) findViewById(R.id.textView);
+
+        initMarqueeView();
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,6 +68,13 @@ public class MainActivity extends AppCompatActivity {
         mShowUserViewModel = ViewModelProviders.of(this).get(TestViewModel.class);
         populateDb();
         subscribeUiLoans();
+    }
+
+    private void initMarqueeView() {
+        marqueeView = (MarqueeView) findViewById(R.id.marqueeView);
+        MarqueeAdapter adapter= new MarqueeAdapter(this);
+        marqueeView.setAdapter(adapter);
+        marqueeView.notifyDataSetChanged();
     }
 
     private void populateDb() {
@@ -195,5 +209,33 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onSimpleEvent(SimpleEvent event) {
         Log.d("EventBus", "event.message: " + event.message);
+    }
+
+    public static class MarqueeAdapter extends BaseAdapter<TextView, String> {
+        private Context mContext;
+
+        public MarqueeAdapter(Context context) {
+            this.mContext = context;
+        }
+        @Override
+        protected TextView getView(int position) {
+            TextView mView = new TextView(mContext);
+            return mView;
+        }
+
+        @Override
+        protected String getItem(int position) {
+            return super.getItem(position);
+        }
+
+        @Override
+        public int getItemCount() {
+            return super.getItemCount();
+        }
+
+        @Override
+        protected void setData(List<String> dataList) {
+            super.setData(dataList);
+        }
     }
 }

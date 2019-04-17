@@ -24,6 +24,7 @@
         android:text="button" />
 
     <info.zenan.android.widget.marquee.MarqueeView
+        android:id="@+id/marqueeView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 </LinearLayout>

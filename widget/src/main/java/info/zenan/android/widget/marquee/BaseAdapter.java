@@ -1,11 +1,13 @@
 package info.zenan.android.widget.marquee;
 
+import android.view.View;
+
 import java.util.List;
 
-public class BaseAdapter<V, D> {
+public class BaseAdapter<V extends View, D> {
     private List<D> dataList;
 
-    protected V createView(int position) {
+    protected V getView(int position) {
         return null;
     }
 
@@ -15,6 +17,13 @@ public class BaseAdapter<V, D> {
             return null;
         }
         return dataList.get(position);
+    }
+
+    public int getItemCount() {
+        if (dataList == null) {
+            return 0;
+        }
+        return dataList.size();
     }
 
     protected void setData(List<D> dataList) {
